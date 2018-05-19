@@ -1,0 +1,13 @@
+{
+  "name": "BallTransporterServer",
+  "version": "1.0.0",
+  "description": "A node.js application that detects ball of specified color (via OpenCV) and transport it (via Arduino) to specified destination.",
+  "main": "app.js",
+  "repository": "git@github.com:choznerol/BallTransporterServer.git",
+  "author": "choznerol <lawrencechou1024@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.3",
+    "python-shell": "^0.5.0"
+  }
+}
