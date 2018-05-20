@@ -1,0 +1,25 @@
+extends layout
+
+block content
+  h1 管理者後台
+
+  #meta
+    p 資料庫權限：#{user}
+
+  section
+    p 使用者訂單狀態：
+    if rows[0]
+      table
+        tr
+          th id
+          th name
+          th color
+          th send_status
+        each row in rows
+          tr
+            td= row.id
+            td= row.name
+            td= row.color
+            td= row.send_status
+    else
+      i 沒有內容
