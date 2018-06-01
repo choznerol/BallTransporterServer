@@ -12,6 +12,7 @@ import sys
 import os
 import cv2
 import math
+import serial
 import numpy as np
 
 # TODO: use ./BALL_COLOR_HUE.yml instead
@@ -71,7 +72,7 @@ def crop_circle(img):
 
 
 """
-接收 image 與圓型座標，回傳標註後的 image 
+接收 image 與圓型座標，回傳標註後的 image
 """
 def mark_circle(image, circles):
     num_circles = 0
@@ -94,6 +95,7 @@ def main():
     # Default options
     debug = False
     hue_range = None
+    ser = serial.Serial('/dev/ttyUSB0', 9600)
 
     # TODO: parse --color-hue argument
     # Parse arguments
@@ -118,7 +120,7 @@ def main():
         cropped_by_color, intensity = crop_by_color_range(frame0, hue_range[0], hue_range[1])
         circled, circles = crop_circle(cropped_by_color)
 
-        # Debug 模式下顯示圖片
+        # Debug 模式下顯示圖片、印出顯示方位
         if debug:
             cv2.imshow('circled', circled)
             # 按下 q 關閉所有視窗
@@ -127,14 +129,31 @@ def main():
                 cp0.release()
                 break
 
-        if circles is not None:
-            circle_x = circles[0][0][0]
-            width = circled.shape[1]
-            hor_offset = (circle_x - (width / 2)) / (width / 2)
-            print(hor_offset)
+            # 顯示球的方位
+            if circles is not None:
+                circle_x = circles[0][0][0]
+                width = circled.shape[1]
+                hor_offset = (circle_x - (width / 2)) / (width / 2)
+                print(hor_offset)
+            else:
+                print(None)
+        # 非 Debug 模式下以 Serial 傳送控制左右輪、夾爪的 byte
+        # 格式：
+        #    左輪    右輪   夾爪
+        #   {0|1|2}{0|1|2}{0|1}
         else:
-            print(None)
-
+            msg = '000'
+            if circles is not None:
+                circle_x = circles[0][0][0]
+                width = circled.shape[1]
+                hor_offset = (circle_x - (width / 2)) / (width / 2)
+                if hor_offset > 0:
+                    msg = '100'
+                else:
+                    msg = '010'
+            else:
+                msg = '220'
+            ser.write(msg)
 
 """
 執行 main() 開發測試
