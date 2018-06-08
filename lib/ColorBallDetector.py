@@ -1,4 +1,5 @@
 #!/usr/bin/env python3 -tt
+# -*- coding: utf-8 -*-
 """
 用法: python3 ./ColorBallDetector.py [--debug] [--color-hue ./COLOR_HUE.yml] COLOR
 
@@ -95,7 +96,13 @@ def main():
     # Default options
     debug = False
     hue_range = None
-    ser = serial.Serial('/dev/ttyUSB0', 9600)
+    # ttyDevice='/dev/ttyUSB0' # RPi
+    ttyDevice='/dev/tty.usbmodem1411' # Mac
+    try:
+        ser = serial.Serial(ttyDevice, 115200)
+    except serial.serialutil.SerialException as e:
+        print(':104', e)
+        print(f'無法開啟 {ttyDevice}，請檢查與 Arduino 的 USB 連線是否有出現在 /dev 中')
 
     # TODO: parse --color-hue argument
     # Parse arguments
@@ -142,18 +149,21 @@ def main():
         #    左輪    右輪   夾爪
         #   {0|1|2}{0|1|2}{0|1}
         else:
-            msg = '000'
+            msg = '3' # 不動
             if circles is not None:
                 circle_x = circles[0][0][0]
                 width = circled.shape[1]
                 hor_offset = (circle_x - (width / 2)) / (width / 2)
                 if hor_offset > 0:
-                    msg = '100'
+                    msg = '1' # 右轉
                 else:
-                    msg = '010'
+                    msg = '2' # 左轉
+            print(f'serial.write({msg})')
+            ser.write(msg.encode('ASCII'))
+            if ser.inWaiting():
+                print(ser.read().decode('ASCII'))
             else:
-                msg = '220'
-            ser.write(msg)
+                print('NA')
 
 """
 執行 main() 開發測試
