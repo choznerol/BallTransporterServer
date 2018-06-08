@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const handlers = require('../handlers');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -21,16 +22,17 @@ router.get('/', function(req, res, next) {
  * example:
  *   GET 192.168.X.X/users/2/create_order?merchandise=1&destination=2
  */
-router.get(/\d+\/create_order/, function (req, res, next) {
+router.get(/\d+\/create_order/, async (req, res, next) => {
   const { merchandise, destination } = req.query;
 
   if (!merchandise || !destination) {
-    res.status(400).send('未提供 Query string `merchandise` 及 `destination`');
-    console.error('未提供 Query string `merchandise` 及 `destination`');
+    res.status(400).send('未提供 Query string `merchandise` 及 `destination`').end();
   }
 
   const clientId = req.url.split('/')[1]
-  res.send(`TODO: 嘗試為 User#${clientId} 建立訂單`)
+  await handlers.handleCreateOrder(clientId, merchandise, destination, () => {
+    res.send(`TODO: 嘗試為 User#${clientId} 建立從 ${merchandise} 到 ${destination} 的訂單`);
+  });
 })
 
 

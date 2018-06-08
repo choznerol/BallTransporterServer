@@ -12,15 +12,16 @@
     "init:database": "python3 ./scripts/init_database.py"
   },
   "dependencies": {
-    "express": "^4.16.3",
-    "python-shell": "^0.5.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "dotenv": "^5.0.1",
+    "express": "^4.16.3",
     "http-errors": "~1.6.2",
+    "lodash": "^4.17.10",
     "morgan": "~1.9.0",
     "mysql": "^2.15.0",
     "node-sass-middleware": "0.11.0",
-    "pug": "2.0.0-beta11"
+    "pug": "2.0.0-beta11",
+    "python-shell": "^0.5.0"
   }
 }
