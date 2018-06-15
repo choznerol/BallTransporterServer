@@ -14,6 +14,7 @@ import os
 import cv2
 import math
 import serial
+import getopt
 import numpy as np
 
 # TODO: use ./BALL_COLOR_HUE.yml instead
@@ -93,42 +94,44 @@ def mark_circle(image, circles):
 測試主程式：以 get_color_circle() 偵測圓的座標，用 mark_circle() 在圖片標上圓圈，最後用 imshow() 顯示在螢幕上
 """
 def main():
-    # Default options
-    debug = False
-    hue_range = None
-    # ttyDevice='/dev/ttyUSB0' # RPi
-    ttyDevice='/dev/tty.usbmodem1411' # Mac
-    try:
-        ser = serial.Serial(ttyDevice, 115200)
-    except serial.serialutil.SerialException as e:
-        print(':104', e)
-        print(f'無法開啟 {ttyDevice}，請檢查與 Arduino 的 USB 連線是否有出現在 /dev 中')
+    optlist, args = getopt.getopt(sys.argv[1:], 'x', ['debug', 'tty-device=', ''])
 
-    # TODO: parse --color-hue argument
-    # Parse arguments
-    args = sys.argv[1:]
-    if not args or len(args) < 1:
-        print('輸入參數有誤\n用法: python3 ./ColorBallDetector.py [--debug] [--color-hue ./COLOR_HUE.yml] COLOR')
-        sys.exit(1)
+    options = {}
+    options.setdefault('debug', False)
+    options.setdefault('tty-device', '/dev/ttyUSB0')
+    # options.setdefault('tty-device', '/dev/tty.usbmodem1421') # Mac
+
+    while len(optlist) > 0:
+        (key, val) = optlist.pop()
+        if key == '--debug':
+            options.update({'debug': True})
+        elif key == '--tty-device':
+            options.update({'tty-device': val})
+        else:
+            print('未知的參數{}{}'.format(key, val))
+            exit(1)
+
+    print('[DEBUG] Running with', options)
+
+    ser = serial.Serial(options.get('tty-device'), 115200)
+
     color = args[-1]
     if color not in COLOR_RANGE_HSV:
-        print(f'字典中找不到 `{color}` 的 hue 值：', COLOR_RANGE_HSV)
+        print('字典中找不到球色 `{}` 的 hue 值：'.format(color), COLOR_RANGE_HSV)
         sys.exit(1)
 
-    if "--debug" in args:
-        debug = True
     hue_range = COLOR_RANGE_HSV[color]
 
 
     # Detect ball
     cp0 = cv2.VideoCapture(0)
-    while 1:
+    while True:
         ret0, frame0 = cp0.read()
         cropped_by_color, intensity = crop_by_color_range(frame0, hue_range[0], hue_range[1])
         circled, circles = crop_circle(cropped_by_color)
 
         # Debug 模式下顯示圖片、印出顯示方位
-        if debug:
+        if options.get('debug'):
             cv2.imshow('circled', circled)
             # 按下 q 關閉所有視窗
             if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -144,26 +147,25 @@ def main():
                 print(hor_offset)
             else:
                 print(None)
-        # 非 Debug 模式下以 Serial 傳送控制左右輪、夾爪的 byte
+
+        # 以 Serial 傳送控制左右輪、夾爪的指令代碼
         # 格式：
-        #    左輪    右輪   夾爪
-        #   {0|1|2}{0|1|2}{0|1}
-        else:
-            msg = '3' # 不動
-            if circles is not None:
-                circle_x = circles[0][0][0]
-                width = circled.shape[1]
-                hor_offset = (circle_x - (width / 2)) / (width / 2)
-                if hor_offset > 0:
-                    msg = '1' # 右轉
-                else:
-                    msg = '2' # 左轉
-            print(f'serial.write({msg})')
-            ser.write(msg.encode('ASCII'))
-            if ser.inWaiting():
-                print(ser.read().decode('ASCII'))
+        #   0 不動, 1 左轉, 2 右轉, 3 前進 , 4 後退, 5 關爪子, 6 開爪
+        msg = '3' # 預設前進
+        if circles is not None:
+            circle_x = circles[0][0][0]
+            width = circled.shape[1]
+            hor_offset = (circle_x - (width / 2)) / (width / 2)
+            if hor_offset > 0:
+                msg = '1' # 右轉
             else:
-                print('NA')
+                msg = '2' # 左轉
+        print('serial.write({})'.format(msg))
+        ser.write(msg.encode('ASCII'))
+        if ser.inWaiting():
+            print(ser.read().decode('ASCII'))
+        else:
+            print('NA')
 
 """
 執行 main() 開發測試
