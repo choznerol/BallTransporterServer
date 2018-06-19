@@ -1,0 +1,3 @@
+[submodule "modules/opencv-color-ball-transporter"]
+	path = modules/opencv-color-ball-transporter
+	url = git@github.com:choznerol/opencv-color-ball-transporter.git
