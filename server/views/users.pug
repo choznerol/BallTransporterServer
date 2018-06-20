@@ -1,25 +1,70 @@
 extends layout
 
 block content
-  h1 管理者後台
+  h1 管理後台
+  a(href='/users'): button
+    //- 倒數到 0 時 reload
+    span 更新(
+    span#count_down 300
+    span )
 
   #meta
     p 資料庫權限：#{user}
 
   section
-    p 使用者訂單狀態：
     if rows[0]
       table
         tr
           th id
-          th name
-          th color
-          th send_status
+          th 姓名
+          th 貨品顏色
+          th 運送狀態
+          th 藍
+          th 紅
+          th 綠
+          th 黃
+          th 紫
         each row in rows
           tr
             td= row.id
-            td= row.name
+            td #{row.name}&nbsp;(#{userColor[row.id-1]})
             td= row.color
-            td= row.send_status
+            td
+              if row.send_status == 1
+                span 運送中(1)&nbsp;
+                b: a(href='/'+row.id+'/cancel_order') 取消
+              else if row.send_status == -1
+                span 錯誤(-1)&nbsp;
+                b: a(href='/'+row.id+'/cancel_order') 取消
+              else if row.send_status == 0
+                span 無(0)
+              else
+                span 未知的狀態:
+                span= row.send_status
+            td: a(href='/user/'+row.id+'/create_order?merchandise=BLUE&destination='+userColor[row.id-1] target='_blank') 訂
+            td: a(href='/user/'+row.id+'/create_order?merchandise=RED&destination='+userColor[row.id-1] target='_blank') 訂
+            td: a(href='/user/'+row.id+'/create_order?merchandise=GREEN&destination='+userColor[row.id-1] target='_blank') 訂
+            td: a(href='/user/'+row.id+'/create_order?merchandise=YELLOW&destination='+userColor[row.id-1] target='_blank') 訂
+            td: a(href='/user/'+row.id+'/create_order?merchandise=PURPLE&destination='+userColor[row.id-1] target='_blank') 訂
+
+
     else
-      i 沒有內容
+      code company.Client_info
+      span 中沒有內容！
+
+  script.
+    var count_el = document.querySelector('#count_down')
+    var count = Number(count_el.innerHTML)
+    function tick() {
+      console.log(count - 1)
+      if (count == 0) {
+        window.location.reload()
+      }
+      count -= 1
+      if (count >= 0) {
+        count_el.innerHTML = count
+      } else {
+        count_el.innerHTML = '更新中...'
+      }
+    }
+    setInterval(tick, 1000)

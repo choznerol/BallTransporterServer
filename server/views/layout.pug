@@ -4,4 +4,8 @@ html
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
+    nav
+      a(href='/users') 管理後台
+      span &nbsp;/&nbsp;
+      a(href='/order' disabled) 新增訂單(N/A)
     block content

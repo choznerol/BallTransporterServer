@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const handlers = require("../handlers");
+const orderService = require("../service/OrderService");
 
 /* GET users listing. */
 router.get("/", function(req, res, next) {
@@ -10,7 +11,8 @@ router.get("/", function(req, res, next) {
     if (err) throw err;
     res.render("users", {
       rows,
-      user: req.db.config.user
+      user: req.db.config.user,
+      userColor: ["BLUE", "RED", "GREEN", "YELLOW", "PURPLE"]
     });
   });
 });
@@ -33,10 +35,10 @@ router.get(/\d+\/create_order/, async (req, res, next) => {
 
   const clientId = req.url.match(/\/(\d+)\/create_order/)[1];
   // 建立訂單
-  await handlers.handleCreateOrder(clientId, merchandise, destination);
+  await orderService.dispatchOrder(clientId, merchandise, destination);
 
   // 導向 send_status 查詢結果
-  res.redirect(200, `/${clientId}/send_status`);
+  res.redirect(200, `user/${clientId}/send_status`);
 });
 
 /**
