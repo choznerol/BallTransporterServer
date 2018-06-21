@@ -45,12 +45,14 @@ class OrderService {
   }
 
   /** 終止 */
-  async cancelOrder() {
+  cancelOrder(clientId) {
     if (!this.pyshell || this.pyshell.terminated) {
       console.log("cancelOrder(): No pyshell process running");
-      return "NO_PROCESS";
+      updateSendStatue(clientId, 0, "NA");
       this.pyshell.terminate();
+      return "NO_PROCESS";
     } else {
+      updateSendStatue(clientId, 0, "NA");
       console.log("cancelOrder(): Success!");
       return "SUCCESS";
     }

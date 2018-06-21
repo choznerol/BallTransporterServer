@@ -38,7 +38,7 @@ router.get(/\d+\/create_order/, async (req, res, next) => {
   await orderService.dispatchOrder(clientId, merchandise, destination);
 
   // 導向 send_status 查詢結果
-  res.redirect(200, `user/${clientId}/send_status`);
+  res.redirect(`user/${clientId}/send_status`);
 });
 
 /**
@@ -55,9 +55,10 @@ router.get(/\d+\/send_status/, handlers.handleGetSendStatus);
  * example:
  *   GET 192.168.X.X/users/2/cancel_order
  */
-router.get(/\d+\/cancel_order/, function(req, res, next) {
+router.get(/\d+\/cancel_order/, (req, res, next) => {
   const clientId = req.url.split("/")[1];
-  res.send(`TODO: 嘗試為 User#${clientId} 取消訂單`);
+  orderService.cancelOrder(clientId);
+  res.send("OK");
 });
 
 module.exports = router;
