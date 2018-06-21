@@ -19,15 +19,4 @@ db.connect(err => {
   console.log("成功連接資料庫" + info);
 });
 
-const updateSendStatue = (id, status) => {
-  db.query(
-    "UPDATE Client_info SET send_status = ? WHERE id = ?",
-    [status, id],
-    (err, results, fields) => {
-      if (err) throw err;
-      console.log("updateSendStatue -> ", results);
-    }
-  );
-};
-
 module.exports = db;

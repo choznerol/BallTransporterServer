@@ -8,22 +8,31 @@ const modulePath = path.resolve(
 );
 const scriptName = "transporter.py";
 
+const updateSendStatue = (id, status, ballColor) => {
+  db.query(
+    "UPDATE Client_info SET send_status = ?, color = ? WHERE id = ?",
+    [status, ballColor, id],
+    (err, results, fields) => {
+      if (err) throw err;
+      console.log("updateSendStatue -> ", results);
+    }
+  );
+};
+
 class OrderService {
   constructor() {
     this.pyshell = null;
   }
 
-  async dispatchOrder(clientId, ballColor, destinationColor) {
-    console.log(
-      `dispatchOrder(${clientId}, ${ballColor}, ${destinationColor})`
-    );
+  async dispatchOrder(clientId, ballColor, destColor) {
+    console.log(`dispatchOrder(${clientId}, ${ballColor}, ${destColor})`);
 
     const options = {
       pythonPath: "python3",
       pythonOptions: ["-u"], // unbuffered：即時顯示 print 結果
       args: [
         `--ball-color=${ballColor}`,
-        `--dest-color=${destinationColor}`,
+        `--dest-color=${destColor}`,
         `--tty-device=${process.env.TTY_DEVICE}`,
         "--debug"
       ],
@@ -33,15 +42,22 @@ class OrderService {
 
     this.pyshell = new PythonShell(scriptName, options);
 
+    updateSendStatue(clientId, 1, ballColor);
+
     // get message back
     this.pyshell.on("message", function(message) {
       console.log(`[${scriptName}] ${message}`);
     });
 
-    // end the input stream and allow the process to exit
-    this.pyshell.end(function(err, code, signal) {
-      if (err) throw err;
+    this.pyshell.on("error", function(message) {
+      console.log(`[${scriptName}] ${message}`);
+      updateSendStatue(clientId, -1, ballColor);
     });
+
+    // end the input stream and allow the process to exit
+    // this.pyshell.end(function(err, code, signal) {
+    //   if (err) throw err;
+    // });
   }
 
   /** 終止 */
