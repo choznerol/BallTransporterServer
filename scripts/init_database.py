@@ -6,32 +6,32 @@ import pymysql
 """
 
 config = {
-  'host': input('> 輸入 mysql 所在 host (預設 "127.0.0.1")：') or '127.0.0.1',
-  'user': input('> 輸入 mysql 使用者名稱 (預設 "pi")：') or 'pi',
-  'password': input(f'> 輸入使用者的密碼：'),
+    'host': input('> 輸入 mysql 所在 host (預設 "127.0.0.1")：') or '127.0.0.1',
+    'user': input('> 輸入 mysql 使用者名稱 (預設 "pi")：') or 'pi',
+    'password': input(f'> 輸入使用者的密碼：'),
 }
 
 conn = pymysql.connect(**config)
 cursor = conn.cursor()
 
 tasks = [
-  "DROP DATABASE IF EXISTS company;",
-  "CREATE DATABASE company;",
-  "USE company;",
-  "CREATE TABLE Client_info (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), color INT(255), send_status INT(255));",
-  "INSERT INTO Client_info(name, color, send_status) VALUES('Angela', 0, 0), ('Warren', 0, 0), ('Tobby', 0, 0), ('Tom', 0, 0), ('Johnson', 0, 0);"
+    "DROP DATABASE IF EXISTS company;",
+    "CREATE DATABASE company;",
+    "USE company;",
+    "CREATE TABLE Client_info (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), color VARCHAR(255), send_status INT(255));",
+    "INSERT INTO Client_info(name, color, send_status) VALUES('Angela', 'NA', 0), ('Warren', 'NA', 0), ('Tobby', 'NA', 0), ('Tom', 'NA', 0), ('Johnson', 'NA', 0);"
 ]
 
 for index, sql in enumerate(tasks):
-  print(f'[{index+1}/{len(tasks)}] 執行: {sql}')
-  try:
-    cursor.execute(sql)
-    conn.commit()
-  except:
-    conn.rollback()
-    conn.close()
-    print(f'SQL執行失敗：{sql}')
-    print('資料庫已回滾，即將退出...')
-    exit(1)
+    print(f'[{index+1}/{len(tasks)}] 執行: {sql}')
+    try:
+        cursor.execute(sql)
+        conn.commit()
+    except:
+        conn.rollback()
+        conn.close()
+        print(f'SQL執行失敗：{sql}')
+        print('資料庫已回滾，即將退出...')
+        exit(1)
 
 conn.close()
