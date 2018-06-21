@@ -12,6 +12,7 @@
     "init:database": "python3 ./scripts/init_database.py"
   },
   "dependencies": {
+    "child_process": "^1.0.2",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "dotenv": "^5.0.1",
