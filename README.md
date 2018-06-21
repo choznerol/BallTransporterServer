@@ -4,7 +4,15 @@ A node.js application that detects ball of specified color (via OpenCV) and tran
 ## Development
 
 ### 本機開發環境（以 macOS 10.12 為例）
-0. `$ git clone https://github.com/choznerol/BallTransporterServer.git && cd ./BallTransporterServer`
+0.
+```
+# 下載此專案
+$ git clone https://github.com/choznerol/BallTransporterServer.git && cd ./BallTransporterServer
+
+# 下載子模組 modules/opencv-color-ball-transporter
+$ git submodule init && git submodule update
+```
+
 1. 安裝 node.js 相關套件:
     ```
     $ yarn                           ＃ 或 npm install
