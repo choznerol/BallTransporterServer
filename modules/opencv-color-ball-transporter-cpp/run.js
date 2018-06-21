@@ -1,10 +1,11 @@
 const { spawn } = require("child_process");
+const path = require("path");
 
 const run = (program, args) => {
   const _args = args ? args.split(" ").map(arg => arg.toLowerCase()) : [];
-  console.log(`$ ${program} ${_args}`);
+  console.log(`$ ${path.resolve(__dirname, "./")}/${program} `);
 
-  const child = spawn(program, _args);
+  const child = spawn(`${path.resolve(__dirname, "./")}/${program}`, _args);
 
   child.stdout.on("data", data => {
     console.log(`stdout: ${data}`);
