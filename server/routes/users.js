@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const handlers = require("../handlers");
 const orderService = require("../service/OrderService");
+const run = require("../../modules/opencv-color-ball-transporter-cpp/run.js");
 
 /* GET users listing. */
 router.get("/", function(req, res, next) {
@@ -24,7 +25,7 @@ router.get("/", function(req, res, next) {
  *   GET 192.168.X.X/users/2/create_order?merchandise=1&destination=2
  */
 router.get(/\d+\/create_order/, async (req, res, next) => {
-  const { merchandise, destination } = req.query;
+  const { merchandise, destination, cpp } = req.query;
 
   if (!merchandise || !destination) {
     res
@@ -35,10 +36,18 @@ router.get(/\d+\/create_order/, async (req, res, next) => {
 
   const clientId = req.url.match(/\/(\d+)\/create_order/)[1];
   // 建立訂單
-  await orderService.dispatchOrder(clientId, merchandise, destination);
+  if (cpp == 1) {
+    console.log(`$ out ${merchandise.toLowerCase()}`);
+    run("out", merchandise).then((err, result) => {
+      if (err) throw err;
+      console.log("result", result);
+    });
+  } else {
+    await orderService.dispatchOrder(clientId, merchandise, destination);
+  }
 
   // 導向 send_status 查詢結果
-  res.redirect(`user/${clientId}/send_status`);
+  res.redirect(`/user/${clientId}/send_status`);
 });
 
 /**

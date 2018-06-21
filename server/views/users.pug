@@ -41,11 +41,26 @@ block content
               else
                 span 未知的狀態:
                 span= row.send_status
-            td: a(href='/user/'+row.id+'/create_order?merchandise=BLUE&destination='+userColor[row.id-1] target='_blank') 訂
-            td: a(href='/user/'+row.id+'/create_order?merchandise=RED&destination='+userColor[row.id-1] target='_blank') 訂
-            td: a(href='/user/'+row.id+'/create_order?merchandise=GREEN&destination='+userColor[row.id-1] target='_blank') 訂
-            td: a(href='/user/'+row.id+'/create_order?merchandise=YELLOW&destination='+userColor[row.id-1] target='_blank') 訂
-            td: a(href='/user/'+row.id+'/create_order?merchandise=PURPLE&destination='+userColor[row.id-1] target='_blank') 訂
+            td
+              a(href='/user/'+row.id+'/create_order?merchandise=BLUE&destination='+userColor[row.id-1] target='_blank') 訂(py)
+              br
+              a(href='/user/'+row.id+'/create_order?cpp=1&merchandise=BLUE&destination='+userColor[row.id-1] target='_blank') 訂(c++)
+            td
+              a(href='/user/'+row.id+'/create_order?merchandise=RED&destination='+userColor[row.id-1] target='_blank') 訂(py)
+              br
+              a(href='/user/'+row.id+'/create_order?cpp=1&merchandise=RED&destination='+userColor[row.id-1] target='_blank') 訂(c++)
+            td
+              a(href='/user/'+row.id+'/create_order?merchandise=GREEN&destination='+userColor[row.id-1] target='_blank') 訂(py)
+              br
+              a(href='/user/'+row.id+'/create_order?cpp=1&merchandise=GREEN&destination='+userColor[row.id-1] target='_blank') 訂(c++)
+            td
+              a(href='/user/'+row.id+'/create_order?merchandise=YELLOW&destination='+userColor[row.id-1] target='_blank') 訂(py)
+              br
+              a(href='/user/'+row.id+'/create_order?cpp=1&merchandise=YELLOW&destination='+userColor[row.id-1] target='_blank') 訂(c++)
+            td
+              a(href='/user/'+row.id+'/create_order?merchandise=PURPLE&destination='+userColor[row.id-1] target='_blank') 訂(py)
+              br
+              a(href='/user/'+row.id+'/create_order?cpp=1&merchandise=PURPLE&destination='+userColor[row.id-1] target='_blank') 訂(c++)
 
 
     else
