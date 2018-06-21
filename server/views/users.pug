@@ -32,10 +32,10 @@ block content
             td
               if row.send_status == 1
                 span 運送中(1)&nbsp;
-                b: a(href='/'+row.id+'/cancel_order') 取消
+                b: a(href='/user/'+row.id+'/cancel_order') 取消
               else if row.send_status == -1
                 span 錯誤(-1)&nbsp;
-                b: a(href='/'+row.id+'/cancel_order') 取消
+                b: a(href='/user/'+row.id+'/cancel_order') 取消
               else if row.send_status == 0
                 span 無(0)
               else
