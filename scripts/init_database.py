@@ -8,7 +8,7 @@ import pymysql
 config = {
     'host': input('> 輸入 mysql 所在 host (預設 "127.0.0.1")：') or '127.0.0.1',
     'user': input('> 輸入 mysql 使用者名稱 (預設 "pi")：') or 'pi',
-    'password': input(f'> 輸入使用者的密碼：'),
+    'password': input('> 輸入使用者的密碼：'),
 }
 
 conn = pymysql.connect(**config)
@@ -23,14 +23,14 @@ tasks = [
 ]
 
 for index, sql in enumerate(tasks):
-    print(f'[{index+1}/{len(tasks)}] 執行: {sql}')
+    print('[{}/{}] 執行: {}'.format(index+1, len(tasks), sql))
     try:
         cursor.execute(sql)
         conn.commit()
     except:
         conn.rollback()
         conn.close()
-        print(f'SQL執行失敗：{sql}')
+        print('SQL執行失敗：{}'.format(sql))
         print('資料庫已回滾，即將退出...')
         exit(1)
 
