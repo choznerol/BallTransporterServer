@@ -1,15 +1,26 @@
-const util = require("util");
-const exec = util.promisify(require("child_process").exec);
-const path = require("path");
+const { spawn } = require("child_process");
 
-async function run(program, args) {
-  const { stdout, stderr } = await exec(
-    `${path.resolve(__dirname, "./")}/${program} ${args.toLowerCase()}`
-  );
-  console.log("stdout:", stdout);
-  console.log("stderr:", stderr);
-}
+const run = (program, args) => {
+  const _args = args ? args.split(" ").map(arg => arg.toLowerCase()) : [];
+  console.log(`$ ${program} ${_args}`);
 
-module.exports = run;
+  const child = spawn(program, _args);
+
+  child.stdout.on("data", data => {
+    console.log(`stdout: ${data}`);
+  });
+
+  child.stderr.on("data", data => {
+    console.log(`stderr: ${data}`);
+  });
+
+  child.on("error", err => {
+    throw err;
+  });
+
+  child.on("close", code => {
+    console.log(`child process exited with code ${code}`);
+  });
+};
 
 module.exports = run;
