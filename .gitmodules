@@ -1,3 +1,6 @@
 [submodule "modules/opencv-color-ball-transporter"]
 	path = modules/opencv-color-ball-transporter
 	url = https://github.com/choznerol/opencv-color-ball-transporter.git
+[submodule "modules/face-ball"]
+	path = modules/face-ball
+	url = https://github.com/andrewlai61616/face-ball
