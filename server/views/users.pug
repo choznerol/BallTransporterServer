@@ -33,6 +33,9 @@ block content
               if row.send_status == 1
                 span 運送中(1)&nbsp;
                 b: a(href='/user/'+row.id+'/cancel_order') 取消
+              else if row.send_status == 2
+                span 完成(2)&nbsp;
+                b: a(href='/user/'+row.id+'/cancel_order') 取消
               else if row.send_status == -1
                 span 錯誤(-1)&nbsp;
                 b: a(href='/user/'+row.id+'/cancel_order') 取消

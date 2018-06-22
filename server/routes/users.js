@@ -38,18 +38,7 @@ router.get(/\d+\/create_order/, async (req, res, next) => {
   // 建立訂單
   if (cpp == 1) {
     console.log(`$ out ${merchandise.toLowerCase()}`);
-    run("out", merchandise).then((err, result) => {
-      if (err) throw err;
-      req.db.query(
-        "UPDATE Client_info SET send_status = ?, color = ? WHERE id = ?",
-        [1, merchandise, clientId],
-        (err, results, fields) => {
-          if (err) throw err;
-          console.log("updateSendStatue -> ", results);
-        }
-      );
-      console.log("result", result);
-    });
+    run("out", merchandise, req.db, merchandise, clientId);
   } else {
     await orderService.dispatchOrder(clientId, merchandise, destination);
   }
