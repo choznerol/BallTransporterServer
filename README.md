@@ -1,7 +1,10 @@
-# 🚧[WIP]🚧 BallTransporterServer
+# BallTransporterServer
 A node.js application that detects ball of specified color (via OpenCV) and transport it (via Arduino) to specified destination.
 
-## Development
+## 專案架構
+![screen shot 2018-06-23 at 4 42 05 pm](https://user-images.githubusercontent.com/12410942/41807682-ecc4615a-7704-11e8-90ed-2c143ac18f07.png)
+
+## 開發
 
 ### 本機開發環境（以 macOS 10.12 為例）
 0.
